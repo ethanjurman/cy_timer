@@ -1,2 +1,2 @@
-# cy_timer
-A cy_borg inspired timer
+# game-timer
+A 8-bit inspired timer
