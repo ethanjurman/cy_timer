@@ -28,4 +28,5 @@ body {
   color: black;
   background: white;
   mix-blend-mode: difference;
+  transition: all 100ms ease;
 }

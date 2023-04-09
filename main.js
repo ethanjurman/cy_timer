@@ -1,4 +1,6 @@
 let timers = JSON.parse(localStorage.getItem('timers')) || [];
+let isPaused = false;
+let pauseTime = null;
 
 function createTimer(timeMS) {
   const timerWrapper = document.createElement('div');
@@ -42,6 +44,11 @@ function msToTime(duration) {
 }
 
 function updateTimers() {
+  if (isPaused) {
+    window.requestAnimationFrame(updateTimers);
+    return;
+  }
+
   const timerDrainers = [...document.querySelectorAll('.timer-drain')];
   document.querySelectorAll('.timer').forEach((timerElement, index) => {
     const { endTime, duration } = timers[index];
@@ -54,15 +61,81 @@ function updateTimers() {
       timerDrainers[index].style.width = `${100 - percentElapsed}%`
       timerElement.innerText = msToTime(newTime);
     } else {
+      timerDrainers[index].style.width = '100%'
       timerElement.innerText = msToTime(0);
     }
   });
 
-  window.requestAnimationFrame(updateTimers)
+  window.requestAnimationFrame(updateTimers);
 }
 
+function pauseTimers() {
+  console.log('resuming timers');
+  isPaused = true;
+  pauseTime = new Date().getTime();
+}
+
+function resumeTimers() {
+  console.log('resuming timers');
+  const resumeTime = new Date().getTime();
+  timers = timers.map((timer) => {
+    return {
+      endTime: timer.endTime + (resumeTime - pauseTime),
+      duration: timer.duration
+    }
+
+  })
+  isPaused = false;
+  pauseTime = null;
+}
+
+function divideTimers() {
+  timers.forEach((timer, index) => {
+    timers[index].endTime = timer.endTime - timer.duration / 2;
+  })
+}
+
+function shrinkTimers(multiplier = 1) {
+  timers.forEach((timer, index) => {
+    timers[index].endTime -= 100 * multiplier;
+    timers[index].duration -= 100 * multiplier;
+  })
+}
+
+function extendTimers(multiplier = 1) {
+  timers.forEach((timer, index) => {
+    timers[index].endTime += 100 * multiplier;
+    timers[index].duration += 100 * multiplier;
+  })
+}
+
+addEventListener('keydown', (event) => {
+  console.log(event.key);
+  if (event.key === ']') {
+    return extendTimers();
+  }
+  if (event.key === '[') {
+    return shrinkTimers();
+  }
+  if (event.key === '>') {
+    return extendTimers(10);
+  }
+  if (event.key === '<') {
+    return shrinkTimers(10);
+  }
+  if (event.key === '/') {
+    return divideTimers();
+  }
+  if (event.key === 'Enter' && !isPaused) {
+    return pauseTimers();
+  }
+  if (event.key === 'Enter' && isPaused) {
+    return resumeTimers();
+  }
+})
+
 createTimer(10000);
-createTimer(60000);
-createTimer(600000);
+createTimer(30000);
+createTimer(300000);
 
 window.requestAnimationFrame(updateTimers)
