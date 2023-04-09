@@ -1,3 +1,4 @@
+let timerIndex = 0;
 let timers = JSON.parse(localStorage.getItem('timers')) || [];
 let isPaused = false;
 let pauseTime = null;
@@ -16,7 +17,8 @@ function createTimer(timeMS) {
 
   const timerName = document.createElement('div');
   timerName.classList.add('timer-name');
-  timerName.setAttribute('data-content', timers.length.toString().padStart(2, '0'));
+  timerName.setAttribute('data-content', timerIndex.toString().padStart(2, '0'));
+  timerIndex += 1;
 
   timerWrapper.appendChild(timerName);
   timerWrapper.appendChild(timerElement);
