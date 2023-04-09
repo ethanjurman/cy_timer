@@ -1,0 +1,15 @@
+* {
+  font-family: "Press Start 2P", cursive;
+}
+
+body {
+  background: black;
+  color: white;
+}
+
+.timer {
+  border: 10px solid white;
+  font-size: 6em;
+  padding: 0.5em;
+  text-align: center;
+}
