@@ -4,7 +4,13 @@ let isPaused = false;
 let pauseTime = null;
 let isEditingText = false;
 
-function createTimer(timeMS) {
+if (timers.length > 0) {
+  console.log('loading previous timers')
+  console.log(timers);
+  timers.forEach((timer) => createTimer(timer.duration, timer.endTime));
+}
+
+function createTimer(timeMS, endTime) {
   const timerWrapper = document.createElement('div');
   timerWrapper.setAttribute('data-index', timers.length);
   timerWrapper.classList.add('timer-wrapper');
@@ -58,6 +64,10 @@ function createTimer(timeMS) {
     })
   }
 
+  if (endTime) {
+    // if endTime is provided, this is already in the timer object
+    return;
+  }
   const nowTime = new Date().getTime();
   timers.push({
     endTime: timeMS + nowTime,
@@ -96,6 +106,11 @@ function updateTimers() {
       timerElement.innerText = msToTime(0);
     }
   });
+
+  // when we can, save the timers
+  setTimeout(() => {
+    localStorage.setItem("timers", JSON.stringify(timers));
+  }, 0);
 
   window.requestAnimationFrame(updateTimers);
 }
