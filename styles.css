@@ -8,8 +8,24 @@ body {
 }
 
 .timer {
-  border: 10px solid white;
-  font-size: 6em;
-  padding: 0.5em;
   text-align: center;
+}
+
+.timer-wrapper {
+  border: 10px solid white;
+  font-size: 5.5em;
+  padding: 0.5em;
+  margin: 0.5em;
+  position: relative;
+}
+
+.timer-drain {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  color: black;
+  background: white;
+  mix-blend-mode: difference;
 }
