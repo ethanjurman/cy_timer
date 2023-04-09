@@ -11,20 +11,55 @@ body {
   text-align: center;
 }
 
+.timers-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.timer-name {
+  border-bottom: 10px solid white;
+  margin-bottom: 0.5em;
+}
+
+.timer-name::before {
+  content: attr(data-content);
+  color: black;
+  font-weight: bold;
+  font-size: 0.3em;
+  line-height: 5.5;
+  display: block;
+  height: 50px;
+  position: absolute;
+  right: -9.5px;
+  top: -90px;
+  border-width: 0px 0px 40px 60px;
+  border-style: solid;
+  border-color: #ffffff00 #ffffff00 #ffffff #ffffff00;
+  text-transform: uppercase;
+  padding-right: 1em;
+}
+
+.timer-name.text-edit::before {
+  animation: blinker 1s linear infinite;
+}
+
 .timer-wrapper {
   border: 10px solid white;
+  border-top: 0px;
   font-size: 5.5em;
-  padding: 0.5em;
-  margin: 0.5em;
+  margin: 0px 0.5em;
   position: relative;
+  padding-bottom: 0.5em;
+  margin-top: 50px;
 }
 
 .timer-drain {
   position: absolute;
-  top: 0;
+  bottom: 0px;
   right: 0;
-  width: 50%;
-  height: 100%;
+  height: 2em;
   color: black;
   background: white;
   mix-blend-mode: difference;
@@ -34,6 +69,8 @@ body {
 .button-container {
   display: flex;
   justify-content: space-evenly;
+  position: fixed;
+  width: 100%;
 }
 
 button {
@@ -41,4 +78,10 @@ button {
   width: 100px;
   height: 50px;
   cursor: pointer;
+}
+
+@keyframes blinker {
+  50% {
+    color: white;
+  }
 }
