@@ -134,8 +134,12 @@ addEventListener('keydown', (event) => {
   }
 })
 
-createTimer(10000);
-createTimer(30000);
-createTimer(300000);
+document.querySelector('.minute-1-timer').onclick = () => createTimer(60000)
+document.querySelector('.minute-5-timer').onclick = () => createTimer(60000 * 5)
+document.querySelector('.minute-10-timer').onclick = () => createTimer(60000 * 10)
+document.querySelector('.minute-30-timer').onclick = () => createTimer(60000 * 30)
+document.querySelector('.hour-1-timer').onclick = () => createTimer(60000 * 60)
+document.querySelector('.hour-4-timer').onclick = () => createTimer(60000 * 60 * 4)
+document.querySelector('.hour-8-timer').onclick = () => createTimer(60000 * 60 * 8)
 
 window.requestAnimationFrame(updateTimers)
