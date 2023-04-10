@@ -120,6 +120,7 @@ function updateTimers({ forceUpdate = false }) {
 function pauseTimers() {
   isPaused = true;
   pauseTime = new Date().getTime();
+  document.querySelector('.pause-text').style.opacity = '1';
 }
 
 function resumeTimers() {
@@ -133,6 +134,7 @@ function resumeTimers() {
   })
   isPaused = false;
   pauseTime = null;
+  document.querySelector('.pause-text').style.opacity = '0';
 }
 
 function divideTimers() {
