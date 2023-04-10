@@ -7,12 +7,12 @@ let isEditingText = false;
 if (timers.length > 0) {
   console.log('loading previous timers')
   console.log(timers);
-  timers.forEach((timer) => createTimer(timer.duration, timer.endTime));
+  timers.forEach((timer, index) => createTimer(timer.duration, timer.endTime, `${index}`));
 }
 
-function createTimer(timeMS, endTime) {
+function createTimer(timeMS, endTime, forcedIndex) {
   const timerWrapper = document.createElement('div');
-  timerWrapper.setAttribute('data-index', timers.length);
+  timerWrapper.setAttribute('data-index', forcedIndex || timers.length);
   timerWrapper.classList.add('timer-wrapper');
 
   const timerElement = document.createElement('div');
@@ -68,6 +68,7 @@ function createTimer(timeMS, endTime) {
     // if endTime is provided, this is already in the timer object
     return;
   }
+
   const nowTime = new Date().getTime();
   timers.push({
     endTime: timeMS + nowTime,
