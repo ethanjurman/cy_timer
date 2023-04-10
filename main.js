@@ -3,6 +3,7 @@ let timers = JSON.parse(localStorage.getItem('timers')) || [];
 let isPaused = false;
 let pauseTime = null;
 let isEditingText = false;
+let isButtonsHidden = false;
 
 if (timers.length > 0) {
   console.log('loading previous timers')
@@ -195,10 +196,12 @@ addEventListener('keydown', (event) => {
     return deleteTimers();
   }
   if (event.key === 'h') {
-    if (document.querySelector('.button-container').style.display === 'none') {
-      document.querySelector('.button-container').style.display = 'flex';
+    if (isButtonsHidden) {
+      isButtonsHidden = false;
+      document.querySelectorAll('button').forEach((e, index) => setTimeout(() => e.classList.remove('button-hide'), index * 50));
     } else {
-      document.querySelector('.button-container').style.display = 'none';
+      isButtonsHidden = true;
+      document.querySelectorAll('button').forEach((e, index) => setTimeout(() => e.classList.add('button-hide'), index * 50));
     }
   }
   if (event.key === '1') { createTimer(60000) }

@@ -1,5 +1,6 @@
 * {
   font-family: "Press Start 2P", monospace;
+  cursor: crosshair;
 }
 
 body {
@@ -32,7 +33,7 @@ body {
   display: block;
   height: 50px;
   position: absolute;
-  right: -9.5px;
+  right: 0px;
   top: -90px;
   border-width: 0px 0px 40px 60px;
   border-style: solid;
@@ -53,6 +54,9 @@ body {
   position: relative;
   padding-bottom: 0.5em;
   margin-top: 50px;
+  overflow-x: clip;
+  transition: all 0.2s ease-in-out;
+  animation: open 1s ease-in-out;
 }
 
 .timer-drain {
@@ -77,11 +81,25 @@ button {
   display: inline-block;
   width: 100px;
   height: 50px;
-  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.button-hide {
+  margin-top: -30%;
 }
 
 @keyframes blinker {
   50% {
     color: white;
+  }
+}
+
+@keyframes open {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: calc(100% - 1em);
   }
 }
