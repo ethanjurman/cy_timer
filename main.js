@@ -6,8 +6,6 @@ let isEditingText = false;
 let isButtonsHidden = false;
 
 if (timers.length > 0) {
-  console.log('loading previous timers')
-  console.log(timers);
   timers.forEach((timer, index) => createTimer(timer.duration, timer.endTime, `${index}`));
 }
 
@@ -86,8 +84,8 @@ function msToTime(duration) {
   return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
 }
 
-function updateTimers() {
-  if (isPaused) {
+function updateTimers({ forceUpdate = false }) {
+  if (isPaused && !forceUpdate) {
     window.requestAnimationFrame(updateTimers);
     return;
   }
@@ -114,7 +112,9 @@ function updateTimers() {
     localStorage.setItem("timers", JSON.stringify(timers));
   }, 0);
 
-  window.requestAnimationFrame(updateTimers);
+  if (!forceUpdate) {
+    window.requestAnimationFrame(updateTimers);
+  }
 }
 
 function pauseTimers() {
@@ -139,24 +139,34 @@ function divideTimers() {
   timers.forEach((timer, index) => {
     timers[index].endTime = timer.endTime - timer.duration / 2;
   })
+
+  if (isPaused) {
+    resumeTimers();
+    updateTimers({ forceUpdate: true });
+    pauseTimers();
+  }
 }
 
 function shrinkTimers(multiplier = 1) {
-  timers.forEach((timer, index) => {
-    const factor = timers[index].duration / 100;
-
-    timers[index].endTime -= factor * multiplier;
-    timers[index].duration -= factor * multiplier;
+  timers.forEach((_timer, index) => {
+    timers[index].endTime -= 6000 * multiplier;
   })
+  if (isPaused) {
+    resumeTimers();
+    updateTimers({ forceUpdate: true });
+    pauseTimers();
+  }
 }
 
 function extendTimers(multiplier = 1) {
-  timers.forEach((timer, index) => {
-    const factor = timers[index].duration / 100;
-
-    timers[index].endTime += factor * multiplier;
-    timers[index].duration += factor * multiplier;
+  timers.forEach((_timer, index) => {
+    timers[index].endTime += 6000 * multiplier;
   })
+  if (isPaused) {
+    resumeTimers();
+    updateTimers({ forceUpdate: true });
+    pauseTimers();
+  }
 }
 
 function deleteTimers() {
@@ -167,7 +177,6 @@ function deleteTimers() {
 }
 
 addEventListener('keydown', (event) => {
-  console.log(event.key);
   if (isEditingText) {
     return updateTimerTitle(event.key);
   }
@@ -198,10 +207,10 @@ addEventListener('keydown', (event) => {
   if (event.key === 'h') {
     if (isButtonsHidden) {
       isButtonsHidden = false;
-      document.querySelectorAll('button').forEach((e, index) => setTimeout(() => e.classList.remove('button-hide'), index * 50));
+      document.querySelectorAll('.add-timer-button').forEach((e, index) => setTimeout(() => e.classList.remove('button-hide'), index * 50));
     } else {
       isButtonsHidden = true;
-      document.querySelectorAll('button').forEach((e, index) => setTimeout(() => e.classList.add('button-hide'), index * 50));
+      document.querySelectorAll('.add-timer-button').forEach((e, index) => setTimeout(() => e.classList.add('button-hide'), index * 50));
     }
   }
   if (event.key === '1') { createTimer(60000) }
@@ -234,13 +243,11 @@ function updateTimerTitle(key) {
 
 }
 
-document.querySelector('.minute-1-timer').onclick = () => createTimer(60000)
-document.querySelector('.minute-5-timer').onclick = () => createTimer(60000 * 5)
-document.querySelector('.minute-10-timer').onclick = () => createTimer(60000 * 10)
-document.querySelector('.minute-30-timer').onclick = () => createTimer(60000 * 30)
-document.querySelector('.hour-1-timer').onclick = () => createTimer(60000 * 60)
-document.querySelector('.hour-4-timer').onclick = () => createTimer(60000 * 60 * 4)
-document.querySelector('.hour-8-timer').onclick = () => createTimer(60000 * 60 * 8)
-document.querySelector('.hour-16-timer').onclick = () => createTimer(60000 * 60 * 16)
+document.querySelectorAll('.add-timer-button').forEach(addTimerButton => {
+  addTimerButton.addEventListener('click', (e) => {
+    createTimer(Number(addTimerButton.getAttribute('data-time')));
+  });
+})
+
 
 window.requestAnimationFrame(updateTimers)

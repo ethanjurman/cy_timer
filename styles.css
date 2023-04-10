@@ -77,16 +77,21 @@ body {
   width: 100%;
 }
 
-button {
+.add-timer-button {
   display: inline-block;
+  background: white;
+  color: black;
   width: 100px;
-  height: 50px;
   text-transform: uppercase;
   transition: all 0.2s;
+  text-align: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 .button-hide {
-  margin-top: -30%;
+  margin-top: -50px;
+  background: black;
 }
 
 @keyframes blinker {
