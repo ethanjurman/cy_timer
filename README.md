@@ -9,6 +9,8 @@ A 8-bit inspired timer
 | `[`, `]`  | reduce / add 6s to timers               |
 | `<`, `>`  | reduce / add 6m to timers               |
 | `/`       | divide total time of timers in half     |
+| `j`, `l`  | double / half timer speed               |
+| `k`       | reset timer speed                       |
 | `Enter`   | pause / resume timers                   |
 | `Escape`  | delete all timers                       |
 

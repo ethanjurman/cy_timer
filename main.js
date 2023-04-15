@@ -1,15 +1,27 @@
 let timerIndex = 0;
-let timers = JSON.parse(localStorage.getItem('timers')) || [];
+let timers = [];
+let timersToLoad = JSON.parse(localStorage.getItem('timers')) || [];
 let isPaused = false;
 let pauseTime = null;
 let isEditingText = false;
 let isButtonsHidden = false;
 
-if (timers.length > 0) {
-  timers.forEach((timer, index) => createTimer(timer.duration, timer.endTime, `${index}`));
+let milli = Date.prototype.getTime;
+let lastTime = (new Date).getTime();
+let curTime = 0;
+Date._speed = 1;
+Date.prototype.getTime = function () {
+  const actualTime = milli.call(this);
+  curTime += (actualTime - lastTime) * Date._speed;
+  lastTime = actualTime;
+  return curTime;
+};
+
+if (timersToLoad.length > 0) {
+  timersToLoad.forEach((timer, index) => createTimer(timer.duration, timer.endTime, timer.currTime, `${index}`));
 }
 
-function createTimer(timeMS, endTime, forcedIndex) {
+function createTimer(timeMS, endTime, currTime, forcedIndex) {
   const timerWrapper = document.createElement('div');
   timerWrapper.setAttribute('data-index', forcedIndex || timers.length);
   timerWrapper.classList.add('timer-wrapper');
@@ -63,20 +75,15 @@ function createTimer(timeMS, endTime, forcedIndex) {
     })
   }
 
-  if (endTime) {
-    // if endTime is provided, this is already in the timer object
-    return;
-  }
-
   const nowTime = new Date().getTime();
   timers.push({
-    endTime: timeMS + nowTime,
+    endTime: endTime ? endTime - currTime : (timeMS + nowTime),
     duration: timeMS
   });
 }
 
 function msToTime(duration) {
-  const milliseconds = `${parseInt((duration % 1000)) % 100}`.padEnd(2, '0');
+  const milliseconds = `${parseInt((duration % 1000))}`.padStart(3, '0').slice(0, 2);
   const seconds = `${Math.floor((duration / 1000) % 60)}`.padStart(2, '0');
   const minutes = `${Math.floor((duration / (1000 * 60)) % 60)}`.padStart(2, '0');
   const hours = `${Math.floor((duration / (1000 * 60 * 60)) % 24)}`.padStart(2, '0');
@@ -94,7 +101,6 @@ function updateTimers({ forceUpdate = false }) {
   document.querySelectorAll('.timer').forEach((timerElement, index) => {
     const { endTime, duration } = timers[index];
     const newTime = endTime - new Date().getTime();
-
     const elapsed = newTime - new Date(0);
     const percentElapsed = (elapsed / duration) * 100;
 
@@ -109,7 +115,14 @@ function updateTimers({ forceUpdate = false }) {
 
   // when we can, save the timers
   setTimeout(() => {
-    localStorage.setItem("timers", JSON.stringify(timers));
+    localStorage.setItem("timers", JSON.stringify(timers.map(timer => {
+      // need to account for time speed ups and downs
+      return {
+        currTime: new Date().getTime(),
+        endTime: timer.endTime,
+        duration: timer.duration
+      }
+    })));
   }, 0);
 
   if (!forceUpdate) {
@@ -178,6 +191,17 @@ function deleteTimers() {
   })
 }
 
+function updateSpeedText() {
+  document.querySelector('.speed-up-text').style.opacity = '0';
+  document.querySelector('.speed-down-text').style.opacity = '0';
+  if (Date._speed > 1) {
+    document.querySelector('.speed-up-text').style.opacity = '1';
+  }
+  if (Date._speed < 1) {
+    document.querySelector('.speed-down-text').style.opacity = '1';
+  }
+}
+
 addEventListener('keydown', (event) => {
   if (isEditingText) {
     return updateTimerTitle(event.key);
@@ -214,6 +238,18 @@ addEventListener('keydown', (event) => {
       isButtonsHidden = true;
       document.querySelectorAll('.add-timer-button').forEach((e, index) => setTimeout(() => e.classList.add('button-hide'), index * 50));
     }
+  }
+  if (event.key === 'j') {
+    Date._speed = Date._speed * 5;
+    updateSpeedText();
+  }
+  if (event.key === 'k') {
+    Date._speed = 1;
+    updateSpeedText();
+  }
+  if (event.key === 'l') {
+    Date._speed = Date._speed / 5;
+    updateSpeedText();
   }
   if (event.key === '1') { createTimer(60000) }
   if (event.key === '2') { createTimer(60000 * 5) }

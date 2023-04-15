@@ -105,6 +105,28 @@ body {
   opacity: 0;
 }
 
+.speed-up-text {
+  position: fixed;
+  right: 50px;
+  top: 60px;
+  transform: scaleY(1) scaleX(0.8);
+  font-weight: bold;
+  font-size: 3em;
+  animation: blinker 0.7s linear infinite;
+  opacity: 0;
+}
+
+.speed-down-text {
+  position: fixed;
+  right: 50px;
+  top: 60px;
+  transform: scaleY(1) scaleX(0.8);
+  font-weight: bold;
+  font-size: 3em;
+  animation: blinker 2s linear infinite;
+  opacity: 0;
+}
+
 @keyframes blinker {
   50% {
     color: white;
